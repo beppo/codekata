@@ -1,0 +1,23 @@
+(ns codekata.chop.chop-test
+  (:require [clojure.test :refer :all]
+            [codekata.chop.chop :refer :all]))
+(deftest index-test
+  (testing "" (is (= -1 (chop 3 '()))))
+  (testing "" (is (= -1 (chop 3 '(1)))))
+  (testing "" (is (= 0 (chop 1 '(1)))))
+  (testing "" (is (= 0 (chop 1 '(1 3 5)))))
+  (testing "" (is (= 1 (chop 3 '(1 3 5)))))
+  (testing "" (is (= 2 (chop 5 '(1 3 5)))))
+  (testing "" (is (= -1 (chop 0 '(1 3 5)))))
+  (testing "" (is (= -1 (chop 2 '(1 3 5)))))
+  (testing "" (is (= -1 (chop 4 '(1 3 5)))))
+  (testing "" (is (= -1 (chop 6 '(1 3 5)))))
+  (testing "" (is (= 0 (chop 1 '(1 3 5 7)))))
+  (testing "" (is (= 1 (chop 3 '(1 3 5 7)))))
+  (testing "" (is (= 2 (chop 5 '(1 3 5 7)))))
+  (testing "" (is (= 3 (chop 7 '(1 3 5 7)))))
+  (testing "" (is (= -1 (chop 0 '(1 3 5 7)))))
+  (testing "" (is (= -1 (chop 2 '(1 3 5 7)))))
+  (testing "" (is (= -1 (chop 4 '(1 3 5 7)))))
+  (testing "" (is (= -1 (chop 6 '(1 3 5 7)))))
+  (testing "" (is (= -1 (chop 8 '(1 3 5 7))))))
