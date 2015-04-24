@@ -81,28 +81,32 @@ if __name__ == "__main__":
     with open("/usr/share/dict/words") as f:
         lines = f.read().splitlines()
         n = len(lines)
-        m = BloomFilter.number_of_required_bits(n, 0.01)
-        k = BloomFilter.number_of_required_hash_functions(m, n)
-        hash_functions = []
-        for i in range(0, k):
-            hash_functions.append(HashFunction(lines[i], m).hash_code)
-        print("n=", n, "m=", m, "k=", k)
-        bloom_filter = BloomFilter(BitSet(m), *hash_functions)
+        # m = BloomFilter.number_of_required_bits(n, 0.01)
+        # k = BloomFilter.number_of_required_hash_functions(m, n)
+        for m in [50000, 100000, 1000000]:
+            for k in range(1, 15):
+                hash_functions = []
+                for i in range(0, k):
+                    hash_functions.append(HashFunction(lines[i], m).hash_code)
+                print("")
+                print("n=", n, "m=", m, "k=", k)
+                bloom_filter = BloomFilter(BitSet(m), *hash_functions)
 
-        for l in lines:
-            bloom_filter.add_item(l)
+                for l in lines:
+                    bloom_filter.add_item(l)
 
-        for l in lines:
-            if not bloom_filter.contains_item(l):
-                print(l, "false negative")
+                for l in lines:
+                    if not bloom_filter.contains_item(l):
+                        print(l, "false negative")
 
-        words = ["hayirli", "sabahlar", "hemserim", "nerden", "gelirsin", "nereye", "gidersin", "bu", "fani", "dunyada", "kac", "dostun", "var"]
-        false_positives = []
-        for word in words:
-            if bloom_filter.contains_item(word):
-                false_positives.append(word)
+                words = ["hayirli", "sabahlar", "hemserim", "nerden", "gelirsin", "nereye", "gidersin", "bu", "fani", "dunyada", "kac", "dostun", "var"]
 
-        print("false positives", false_positives)
-        negatives = [x for x in words if x not in false_positives]
-        negatives = list(filter(lambda x: x not in false_positives, words))
-        print("correct negatives", negatives)
+                false_positives = []
+                for word in words:
+                    if bloom_filter.contains_item(word):
+                        false_positives.append(word)
+
+                print("false positives", false_positives)
+                negatives = [x for x in words if x not in false_positives]
+                negatives = list(filter(lambda x: x not in false_positives, words))
+                print("correct negatives", negatives)
