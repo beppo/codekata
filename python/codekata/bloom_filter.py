@@ -4,22 +4,22 @@ import math
 
 
 class BloomFilter:
-    def __init__(self, representation, *hash_functions):
+    def __init__(self, bitset, *hash_functions):
         super().__init__()
         self.__hash_functions = hash_functions
-        self.__representation = representation
+        self.__bitset = bitset
 
     def contains_item(self, item):
         contains = True
         for hash_function in self.__hash_functions:
             index = hash_function(item)
-            contains = contains and self.__representation.is_set(index)
+            contains = contains and self.__bitset.is_set(index)
         return contains
 
     def add_item(self, item):
         for hash_function in self.__hash_functions:
             index = hash_function(item)
-            self.__representation.set(index)
+            self.__bitset.set(index)
 
     @staticmethod
     def number_of_required_bits(n, p):
@@ -46,7 +46,7 @@ class BloomFilter:
 import array
 
 
-class BitMap:
+class BitSet:
     def __init__(self, m):
         self.__bits = array.array('I', [0] * m)
         self.__m = m
@@ -58,27 +58,51 @@ class BitMap:
         return self.__bits[index] == 1
 
 
+import hashlib
+
+
 class HashFunction:
-    def __init__(self, hash_function, indices, max_value):
+    def __init__(self, seed, max_value):
+        self.__seed = seed
         self.__max_value = max_value
-        self.__indices = indices
-        self.__hash_function = hash_function
 
     def hash_code(self, item):
-        all_bytes = self.__hash_function(item)
+        m = hashlib.md5(self.__seed.encode('utf-8'))
+        m.update(item.encode('utf-8'))
+        all_bytes = m.digest()
         hash_code = 0
-        for index in self.__indices:
+        for index in range(0, 4):
             hash_code <<= 8
             hash_code |= all_bytes[index]
-
         return hash_code % self.__max_value
 
 
-def md5_hash_functions(k, max_value):
-    number_of_bytes = math.ceil(math.log2(max_value) / 8)
-    # I want to calculate indexes
-    # what can I use here
-    # we want to use up all available bytes
-    # if number of bytes is 2 and k is 2 than we should round up number of bytes to 8
-    # if number of bytes 8 and k is 4 than we need to use some bytes twice
-    # if bytes are used twice we need to make sure usage patterns are different
+if __name__ == "__main__":
+    with open("/usr/share/dict/words") as f:
+        lines = f.read().splitlines()
+        n = len(lines)
+        m = BloomFilter.number_of_required_bits(n, 0.01)
+        k = BloomFilter.number_of_required_hash_functions(m, n)
+        hash_functions = []
+        for i in range(0, k):
+            hash_functions.append(HashFunction(lines[i], m).hash_code)
+        print("n=", n, "m=", m, "k=", k)
+        bloom_filter = BloomFilter(BitSet(m), *hash_functions)
+
+        for l in lines:
+            bloom_filter.add_item(l)
+
+        for l in lines:
+            if not bloom_filter.contains_item(l):
+                print(l, "false negative")
+
+        words = ["hayirli", "sabahlar", "hemserim", "nerden", "gelirsin", "nereye", "gidersin", "bu", "fani", "dunyada", "kac", "dostun", "var"]
+        false_positives = []
+        for word in words:
+            if bloom_filter.contains_item(word):
+                false_positives.append(word)
+
+        print("false positives", false_positives)
+        negatives = [x for x in words if x not in false_positives]
+        negatives = list(filter(lambda x: x not in false_positives, words))
+        print("correct negatives", negatives)

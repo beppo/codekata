@@ -6,8 +6,9 @@ from unittest.mock import Mock
 from unittest.mock import call
 
 from codekata.bloom_filter import BloomFilter
-from codekata.bloom_filter import BitMap
+from codekata.bloom_filter import BitSet
 from codekata.bloom_filter import HashFunction
+
 
 class TestStringMethods(unittest.TestCase):
     # provide data with previously known hashes and check bit pattern matches is correct
@@ -47,7 +48,7 @@ class TestStringMethods(unittest.TestCase):
         self.assertFalse(contains_item)
 
     def test_representation(self):
-        bit_map = BitMap(10)
+        bit_map = BitSet(10)
         bits_set = (0, 3, 5, 9)
         # Set bits
         for index in bits_set:
@@ -61,17 +62,18 @@ class TestStringMethods(unittest.TestCase):
             self.assertFalse(bit_map.is_set(index))
 
     def test_hash_function(self):
-        hash_mock = Mock(side_effect=lambda x: {"ali": bytes((1, 1))}.get(x))
-        hash_function = HashFunction(hash_mock, (0, 1), 1024)
-        result = hash_function.hash_code("ali")
-        self.assertEquals(257, result)
+        h1 = HashFunction("hello", 100)
+        h2 = HashFunction("roj bas", 100)
+        r1 = h1.hash_code("ali")
+        r2 = h2.hash_code("ali")
+        print(r1, r2)
+        self.assertTrue(r1 != r2)
 
     def test_number_of_bits(self):
         n = 99171
         m = BloomFilter.number_of_required_bits(n, 0.01)
         k = BloomFilter.number_of_required_hash_functions(m=m, n=n)
         print(m, k)
-
 
 if __name__ == '__main__':
     unittest.main()
