@@ -22,5 +22,5 @@
                               (bit-set (first (last data)) (bit-index n)) (rest (last data))
                               ))))
 
-;; True if nth bit is set, false otherwise
+;; True if n-th bit is set, false otherwise
 (defn is-bit-set-at [x n] (bit-test (nth x (long-bits-index n)) (bit-index n)))
