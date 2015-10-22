@@ -1,6 +1,9 @@
 # Created by .ignore support plugin (hsz.mobi)
-closure/.lein-failures
 **/target
 closure/lib
 .idea
 *.iml
+
+closure/.lein-failures
+closure/.lein-repl-history
+closure/.nrepl-port

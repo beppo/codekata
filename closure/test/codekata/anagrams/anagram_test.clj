@@ -7,6 +7,7 @@
 ;;  )
 
 (deftest anagrams-test
+  (testing "'a' and 'a' are anagrams" (is (= true (anagrams "a" "a"))))
   (testing "'pictures' and 'piecrust' are anagrams" (is (= true (anagrams "pictures" "piecrust"))))
   (testing "'dana' and 'mana' are not anagrams" (is (= false (anagrams "dana" "mana"))))
   )

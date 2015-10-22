@@ -4,7 +4,8 @@
   (require [clojure.string :as string]))
 
 (defn anagrams
-  "Compare two words to words using xx algo and returns true if they are anagrams false otherwise"
+  "Recursively remove all letters from first word and second until there is a letter which is not in second word or all
+  letters are removed from first word. Returns true if all letters are succesfully removed false otherwise"
   {:added "1.0"
    :static true}
   [word1, word2]
