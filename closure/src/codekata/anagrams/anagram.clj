@@ -46,6 +46,10 @@
     )
  )
 
+(defn find-anagrams-v2
+  [dictionary]
+  (reduce (fn [xs x] (codekata.anagrams.anagram/add-to-anagrams xs x)) '() dictionary)
+  )
 
 ;; Possible algorithms to solve this problem
 ;; 1- While dictionary not empty
