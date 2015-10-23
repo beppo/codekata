@@ -48,7 +48,7 @@
 
 (defn find-anagrams-v2
   [dictionary]
-  (reduce (fn [xs x] (codekata.anagrams.anagram/add-to-anagrams xs x)) '() dictionary)
+  (reduce (fn [xs x] (add-to-anagrams xs x)) '() dictionary)
   )
 
 ;; Possible algorithms to solve this problem
